@@ -209,8 +209,8 @@ class XMLCitationTests(unittest.TestCase):
             xml.find('./element-citation/date-in-citation/day').text
         )
         self.assertEqual(
-            'access-date',
-            xml.find('./element-citation/date-in-citation').get('date-type')
+            {},
+            xml.find('./element-citation/date-in-citation').attrib
         )
 
     def test_xml_citation_source_pipe(self):
@@ -654,7 +654,6 @@ class XMLCitationTests(unittest.TestCase):
 
         data = [fakexylosearticle, pxml]
         raw, xml = data
-        authors = {}
         analytic = [{'surname': 'Fausto', 'given_names': u'N'},
                     {'surname': 'Laird', 'given_names': u'AD'},
                     ]
@@ -664,11 +663,14 @@ class XMLCitationTests(unittest.TestCase):
         analytic_inst = ['UNESCO', 'OMS']
         monographic_inst = ['AABB', 'W3C']
 
-        authors['analytic'] = {
-            'person': analytic, 'institution': analytic_inst}
-        authors['monographic'] = {
-            'person': monographic, 'institution': monographic_inst}
-        raw.authors_groups = authors
+        if not hasattr(raw, 'authors_groups'):
+            authors = {}
+            authors['analytic'] = {
+                'person': analytic, 'institution': analytic_inst}
+            authors['monographic'] = {
+                'person': monographic, 'institution': monographic_inst}
+            raw.authors_groups = authors
+
         data = raw, xml
         raw, xml = self._xmlcitation.PersonGroupPipe(
             )._transform_authors_groups(data)
