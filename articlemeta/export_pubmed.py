@@ -99,8 +99,8 @@ class XMLIssuePipe(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        label_volume = raw.issue.volume.replace('ahead', '0') if raw.issue.volume else '0'
-        label_issue = raw.issue.number.replace('ahead', '0') if raw.issue.number else '0'
+        label_volume = raw.issue.volume or ''
+        label_issue = raw.issue.number.replace('ahead', '') if raw.issue.number else ''
 
         vol = ET.Element('volume')
         vol.text = label_volume.strip()
@@ -121,7 +121,7 @@ class XMLIssuePipe(plumber.Pipe):
         if label_issue.strip():
             issue = ET.Element('Issue')
             issue.text = label_issue
-            xml.find('./Article/Journal').append(issue)
+            xml.find('.//Journal').append(issue)
 
         return data
 

@@ -289,8 +289,7 @@ class XMLIssuePipe(plumber.Pipe):
     def transform(self, data):
         raw, xml = data
 
-        label_volume = raw.issue.volume.replace('ahead', '0') if raw.issue.volume else '0'
-        label_issue = raw.issue.number.replace('ahead', '0') if raw.issue.number else '0'
+        label_issue = raw.issue.number.replace('ahead', '') if raw.issue.number else ''
 
         label_suppl_issue = ' suppl %s' % raw.issue.supplement_number if raw.issue.supplement_number else ''
 
@@ -474,33 +473,40 @@ class XMLArticleAbstractPipe(plumber.Pipe):
 
 class XMLArticlePubDatePipe(plumber.Pipe):
 
+    def _create_date(self, date, media_type):
+        if date is not None:
+            el = ET.Element('publication_date')
+            el.set('media_type', media_type)
+            # Month
+            if date[5:7]:
+                month = ET.Element('month')
+                month.text = date[5:7]
+                el.append(month)
+            # Day
+            if date[8:10]:
+                day = ET.Element('day')
+                day.text = date[8:10]
+                el.append(day)
+            # Year
+            if date[0:4]:
+                year = ET.Element('year')
+                year.text = date[0:4]
+                el.append(year)
+            return el
+
     def transform(self, data):
         raw, xml = data
-
-        date = raw.publication_date
-
-        el = ET.Element('publication_date')
-        el.set('media_type', "online")
-
-        # Month
-        if date[5:7]:
-            month = ET.Element('month')
-            month.text = date[5:7]
-            el.append(month)
-        # Day
-        if date[8:10]:
-            day = ET.Element('day')
-            day.text = date[8:10]
-            el.append(day)
-        # Year
-        if date[0:4]:
-            year = ET.Element('year')
-            year.text = date[0:4]
-            el.append(year)
-
-        for journal_article in xml.findall('./body/journal//journal_article'):
-            journal_article.append(deepcopy(el))
-
+        document_date = self._create_date(
+            raw.document_publication_date, 'online')
+        issue_date = self._create_date(
+            raw.issue_publication_date, 'other')
+        if issue_date or document_date:
+            for journal_article in xml.findall(
+                    './body/journal//journal_article'):
+                if issue_date:
+                    journal_article.append(deepcopy(issue_date))
+                if document_date:
+                    journal_article.append(deepcopy(document_date))
         return data
 
 

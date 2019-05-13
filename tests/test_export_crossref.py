@@ -1448,3 +1448,55 @@ class ExportCrossRef_MultiLingueDoc_with_DOI_pt_es_Tests(unittest.TestCase):
         self.assertEqual(
             2, len(xml.findall('.//journal_article//citation_list')))
 
+
+class ExportCrossRef_XMLIssuePipe_Tests(unittest.TestCase):
+
+    def setUp(self):
+        self.xmlcrossref = ET.Element('doi_batch')
+        journal = ET.Element('journal')
+        journal.append(ET.Element('journal_issue'))
+        body = ET.Element('body')
+        body.append(journal)
+        self.xmlcrossref.append(body)
+
+    def test_aop_element(self):
+        _raw_json = {
+            'issue':
+                {'issue':
+                    {'v32': [{'_': 'ahead'}]},
+                 },
+            'article':
+                {'v32': [{'_': 'ahead'}]},
+            }
+        _article = Article(_raw_json)
+
+        data = [_article, self.xmlcrossref]
+
+        _xmlcrossref = export_crossref.XMLIssuePipe()
+        raw, xml = _xmlcrossref.transform(data)
+
+        self.assertEqual(xml.find('.//journal_issue/issue'), None)
+        self.assertEqual(
+            b'<doi_batch><body><journal><journal_issue/></journal></body></doi_batch>',
+            ET.tostring(xml))
+
+    def test_issue_element(self):
+        _raw_json = {
+            'issue':
+                {'issue':
+                    {'v32': [{'_': '10'}]},
+                 },
+            'article':
+                {'v32': [{'_': '10'}]},
+            }
+        _article = Article(_raw_json)
+
+        data = [_article, self.xmlcrossref]
+
+        _xmlcrossref = export_crossref.XMLIssuePipe()
+        raw, xml = _xmlcrossref.transform(data)
+
+        self.assertEqual(xml.findtext('.//journal_issue/issue'), '10')
+        self.assertEqual(
+            b'<doi_batch><body><journal><journal_issue><issue>10</issue></journal_issue></journal></body></doi_batch>',
+            ET.tostring(xml))
