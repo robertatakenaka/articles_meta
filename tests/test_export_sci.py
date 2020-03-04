@@ -1489,7 +1489,7 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_without_volume_pipe(self):
 
-        del(self._article_meta.data['issue']['issue']['v31'])
+        del(self._article_meta.data['article']['v31'])
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1529,7 +1529,7 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_without_issue_pipe(self):
 
-        del(self._article_meta.data['issue']['issue']['v32'])
+        del(self._article_meta.data['article']['v32'])
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1591,9 +1591,9 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl_vol_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        del(self._article_meta.data['issue']['issue']['v32'])
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '1'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        del(self._article_meta.data['article']['v32'])
+        self._article_meta.data['article']['v131'] = [{'_': '1'}]
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1615,10 +1615,10 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl_vol_0_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        del(self._article_meta.data['issue']['issue']['v32'])
-        self._article_meta.data['issue']['issue']['v31'] = [{'_': '10'}]
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '0'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        del(self._article_meta.data['article']['v32'])
+        self._article_meta.data['article']['v31'] = [{'_': '10'}]
+        self._article_meta.data['article']['v131'] = [{'_': '0'}]
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1640,10 +1640,10 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl_issue_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        self._article_meta.data['issue']['issue']['v31'] = [{'_': '10'}]
-        self._article_meta.data['issue']['issue']['v32'] = [{'_': '1'}]
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '2'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        self._article_meta.data['article']['v31'] = [{'_': '10'}]
+        self._article_meta.data['article']['v32'] = [{'_': '1'}]
+        self._article_meta.data['article']['v131'] = [{'_': '2'}]
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1665,11 +1665,12 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl__vol_0_issue_1_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        self._article_meta.data['issue']['issue']['v31'] = [{'_': '10'}]
-        self._article_meta.data['issue']['issue']['v32'] = [{'_': '1'}]
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '0'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        self._article_meta.data['article']['v31'] = [{'_': '10'}]
+        self._article_meta.data['article']['v32'] = [{'_': '1'}]
+        self._article_meta.data['article']['v131'] = [{'_': '0'}]
 
+        print(self._article_meta.data['article'])
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
 
@@ -1690,10 +1691,10 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl__vol_10_issue_20_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        self._article_meta.data['issue']['issue']['v31'] = [{'_': '10'}]
-        self._article_meta.data['issue']['issue']['v32'] = [{'_': '20'}]
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '0'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        self._article_meta.data['article']['v31'] = [{'_': '10'}]
+        self._article_meta.data['article']['v32'] = [{'_': '20'}]
+        self._article_meta.data['article']['v131'] = [{'_': '0'}]
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -1715,10 +1716,10 @@ class ExportTests(unittest.TestCase):
 
     def test_xmlarticle_meta_general_info_suppl__vol_10_issue_20_suppl_10_pipe(self):
 
-        self._article_meta.data['issue']['issue']['v65'] = [{'_': '201008'}]
-        self._article_meta.data['issue']['issue']['v31'] = [{'_': '10'}]
-        self._article_meta.data['issue']['issue']['v32'] = [{'_': '20'}]
-        self._article_meta.data['issue']['issue']['v131'] = [{'_': '10'}]
+        self._article_meta.data['article']['v65'] = [{'_': '201008'}]
+        self._article_meta.data['article']['v31'] = [{'_': '10'}]
+        self._article_meta.data['article']['v32'] = [{'_': '20'}]
+        self._article_meta.data['article']['v131'] = [{'_': '10'}]
 
         pxml = ET.Element('articles')
         pxml.append(ET.Element('article'))
@@ -2056,4 +2057,22 @@ class ExportSci_XMLArticleMetaIssueInfoPipe_Tests(unittest.TestCase):
 
         self.assertEqual(xml.findtext('.//article-meta/issue'), '4')
 
+    def test_xml_article_meta_issue_info_pipe_creates_issue_element_although_there_is_no_raw_issue(self):
+        _raw_json = {
+            'article':
+                {'v31': [{'_': '10'}],
+                 'v32': [{'_': '1'}],
+                 'v132': [{'_': '0'}],
+                 'v880': [{'_': 'S0000000'}]
+                },
+            }
+        _article = Article(_raw_json)
+
+        data = [_article, self._xml]
+
+        _xml = export_sci.XMLArticleMetaIssueInfoPipe()
+        raw, xml = _xml.transform(data)
+
+        self.assertEqual(xml.findtext('.//article-meta/volume'), "10")
+        self.assertEqual(xml.findtext('.//article-meta/issue'), "1 suppl")
 
