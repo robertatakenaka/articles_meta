@@ -859,14 +859,10 @@ class XMLArticleMetaIssueInfoPipe(plumber.Pipe):
         label_issue = issue_data.number.replace('ahead', '') if issue_data.number else ''
 
         suppl = (issue_data.supplement_number or issue_data.supplement_volume or "").strip()
-        label_suppl = ' suppl %s' % suppl if suppl else ''
-
-        if label_suppl:
-            label_issue += label_suppl
-
-        label_issue = SUPPLBEG_REGEX.sub('', label_issue)
-        label_issue = SUPPLEND_REGEX.sub('', label_issue)
-        label_issue = label_issue.strip()
+        if suppl:
+            if suppl.isdigit() and int(suppl) == 0:
+                suppl = ""
+            label_issue += ' suppl %s' % suppl
 
         articlemeta = xml.find('.//front/article-meta')
 
@@ -877,7 +873,7 @@ class XMLArticleMetaIssueInfoPipe(plumber.Pipe):
 
         if label_issue:
             issue = ET.Element('issue')
-            issue.text = label_issue
+            issue.text = label_issue.strip()
             articlemeta.append(issue)
 
         return data
