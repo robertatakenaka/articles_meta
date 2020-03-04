@@ -851,29 +851,19 @@ class XMLArticleMetaElocationInfoPipe(plumber.Pipe):
 
 class XMLArticleMetaIssueInfoPipe(plumber.Pipe):
 
-    def precond(data):
-
-        raw, xml = data
-
-        try:
-            if not raw.issue:
-                raise plumber.UnmetPrecondition()
-        except UnavailableMetadataException as e:
-            raise plumber.UnmetPrecondition()
-
-    @plumber.precondition(precond)
     def transform(self, data):
         raw, xml = data
 
-        label_volume = (raw.issue.volume or '').strip()
-        label_issue = raw.issue.number.replace('ahead', '') if raw.issue.number else ''
+        issue_data = raw.issue or raw.article
+        label_volume = (issue_data.volume or '').strip()
+        label_issue = issue_data.number.replace('ahead', '') if issue_data.number else ''
 
-        label_suppl_issue = ' suppl %s' % raw.issue.supplement_number if raw.issue.supplement_number else ''
+        label_suppl_issue = ' suppl %s' % issue_data.supplement_number if issue_data.supplement_number else ''
 
         if label_suppl_issue:
             label_issue += label_suppl_issue
 
-        label_suppl_volume = ' suppl %s' % raw.issue.supplement_volume if raw.issue.supplement_volume else ''
+        label_suppl_volume = ' suppl %s' % issue_data.supplement_volume if issue_data.supplement_volume else ''
 
         if label_suppl_volume:
             label_issue += label_suppl_volume
