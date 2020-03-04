@@ -858,15 +858,11 @@ class XMLArticleMetaIssueInfoPipe(plumber.Pipe):
         label_volume = (issue_data.volume or '').strip()
         label_issue = issue_data.number.replace('ahead', '') if issue_data.number else ''
 
-        label_suppl_issue = ' suppl %s' % issue_data.supplement_number if issue_data.supplement_number else ''
+        suppl = (issue_data.supplement_number or issue_data.supplement_volume or "").strip()
+        label_suppl = ' suppl %s' % suppl if suppl else ''
 
-        if label_suppl_issue:
-            label_issue += label_suppl_issue
-
-        label_suppl_volume = ' suppl %s' % issue_data.supplement_volume if issue_data.supplement_volume else ''
-
-        if label_suppl_volume:
-            label_issue += label_suppl_volume
+        if label_suppl:
+            label_issue += label_suppl
 
         label_issue = SUPPLBEG_REGEX.sub('', label_issue)
         label_issue = SUPPLEND_REGEX.sub('', label_issue)
